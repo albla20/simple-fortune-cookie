@@ -10,6 +10,7 @@ on:
 
 env:
   GIT_COMMIT: ${{ github.sha }}
+  KUBECONFIG: ${{ github.workspace }}/kubeconfig
 
 jobs:
   Build: 
