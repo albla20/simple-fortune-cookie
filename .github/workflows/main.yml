@@ -59,3 +59,8 @@ jobs:
         run: |
           docker pull ghcr.io/albla20/backend:latest
           docker pull ghcr.io/albla20/frontend:latest
+
+      - name: kubeconfig
+      - run: echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+      - run: kubectl --kubeconfig kubeconfig kubectl get pods
+  
