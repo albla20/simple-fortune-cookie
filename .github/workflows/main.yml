@@ -93,19 +93,16 @@ jobs:
           else
             echo "No manifests found for $ENV, skipping deployment."
           fi
-
-  Test:
-    runs-on: ubuntu-latest
-    needs: Build
-    steps:
+          Test:
+          runs-on: ubuntu-latest
+          needs: Build
+          steps:
       - uses: actions/checkout@v4
-
-      - name: Start stack
-        run: docker-compose up -d --build
-
-      - name: Run availability test
-        run: bash ./test_app.sh http://localhost:8080
-
-      - name: Tear down
-        if: always()
-        run: docker-compose down
+      - name: Start app
+        run: docker compose up -d
+      - name: Test backend
+        run: bash test_app.sh http://localhost:9000
+      - name: Test frontend  
+        run: bash test_app.sh http://localhost:8080
+      - name: Stop app
+        run: docker compose down
