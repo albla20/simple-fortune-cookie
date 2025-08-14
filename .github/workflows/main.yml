@@ -95,7 +95,7 @@ jobs:
             echo "No manifests found for $ENV, skipping deployment."
           fi
           Test:
-          runs-on: ubuntu-latest
+          runs-on: ubuntu-latest 
           needs: Build
           steps:
       - uses: actions/checkout@v4
