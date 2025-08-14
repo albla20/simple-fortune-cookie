@@ -1,5 +1,4 @@
 name: main workflow
-
 on: 
   push:
     branches:
@@ -11,11 +10,9 @@ on:
       - main
       - staging
       - development
-
 env:
   GIT_COMMIT: ${{ github.sha }}
   KUBECONFIG: ${{ github.workspace }}/kubeconfig
-
 jobs:
   Build: 
     runs-on: ubuntu-latest
@@ -24,52 +21,42 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.21.12'
-
       - name: Build backend
         run: |
           cd backend 
           go build .
-
       - name: Build frontend
         run: |
           cd frontend 
           go build .
-
       - name: Test frontend
         run: |
           cd frontend 
           go test ./...
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build and push Docker images
         run: |
           docker build -t ghcr.io/albla20/backend:latest backend
           docker push ghcr.io/albla20/backend:latest
-
           docker build -t ghcr.io/albla20/frontend:latest frontend
           docker push ghcr.io/albla20/frontend:latest
-
       - name: Pull docker images
         run: |
           docker pull ghcr.io/albla20/backend:latest
           docker pull ghcr.io/albla20/frontend:latest
-
       - name: Set up kubeconfig
         run: |
           echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
           export KUBECONFIG=$PWD/kubeconfig
-
       - name: Select environment
         id: env
         run: |
@@ -81,7 +68,6 @@ jobs:
             echo "ENV=development" >> $GITHUB_ENV
           fi
           echo "Deploying to $ENV environment"
-
       - name: Deploy to Kubernetes
         run: |
           MANIFEST_DIR="k8s/${ENV}"
@@ -93,21 +79,19 @@ jobs:
           else
             echo "No manifests found for $ENV, skipping deployment."
           fi
-
   Test:
     runs-on: ubuntu-latest
     needs: Build
     steps:
       - uses: actions/checkout@v4
-
       - name: Start stack
         run: docker compose up -d --build
-
-      - name: Run availability tests
+      - name: Wait for services
+        run: sleep 30
+      - name: Run tests
         run: |
-          docker compose exec frontend bash -c "bash /test_app.sh http://backend:9000"
-          docker compose exec backend bash -c "bash /test_app.sh http://frontend:8080"
-
+          docker compose exec -T frontend bash -c "bash /test_app.sh http://backend:9000"
+          docker compose exec -T backend bash -c "bash /test_app.sh http://frontend:8080"
       - name: Tear down
         if: always()
         run: docker compose down
