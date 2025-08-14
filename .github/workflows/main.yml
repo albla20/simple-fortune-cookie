@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main
+      - staging
+      - development
   pull_request:
     branches: 
       - main
+      - staging
+      - development
 
 env:
   GIT_COMMIT: ${{ github.sha }}
@@ -61,10 +65,26 @@ jobs:
           docker pull ghcr.io/albla20/backend:latest
           docker pull ghcr.io/albla20/frontend:latest
 
-      - name: kubeconfig
+      - name: Set up kubeconfig
         run: |
           echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
           export KUBECONFIG=$PWD/kubeconfig
-          kubectl get nodes
+
+      - name: Select environment
+        run: |
+          if [[ "${GITHUB_REF##*/}" == "main" ]]; then
+            ENV="production"
+          elif [[ "${GITHUB_REF##*/}" == "staging" ]]; then
+            ENV="staging"
+          else
+            ENV="development"
+          fi
+          echo "Deploying to $ENV environment"
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/${ENV}/
+          kubectl rollout status deployment/backend -n $ENV
+          kubectl rollout status deployment/frontend -n $ENV
           
   
