@@ -62,5 +62,5 @@ jobs:
 
       - name: kubeconfig
       - run: echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
-      - run: kubectl --kubeconfig kubeconfig kubectl get pods
+      - run: kubectl --kubeconfig kubeconfig get pods
   
