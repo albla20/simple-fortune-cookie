@@ -4,12 +4,17 @@ on:
   push:
     branches:
       - main
+      - staging
+      - development
   pull_request:
     branches: 
       - main
+      - staging
+      - development
 
 env:
   GIT_COMMIT: ${{ github.sha }}
+  KUBECONFIG: ${{ github.workspace }}/kubeconfig
 
 jobs:
   Build: 
@@ -59,3 +64,35 @@ jobs:
         run: |
           docker pull ghcr.io/albla20/backend:latest
           docker pull ghcr.io/albla20/frontend:latest
+
+
+      - name: Set up kubeconfig
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+
+      - name: Select environment
+        id: env
+        run: |
+          if [[ "${GITHUB_REF##*/}" == "main" ]]; then
+            echo "ENV=production" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF##*/}" == "staging" ]]; then
+            echo "ENV=staging" >> $GITHUB_ENV
+          else
+            echo "ENV=development" >> $GITHUB_ENV
+          fi
+          echo "Deploying to $ENV environment"
+
+      - name: Deploy to Kubernetes
+        run: |
+          MANIFEST_DIR="k8s/${ENV}"
+          if [ -d "$MANIFEST_DIR" ]; then
+            echo "Applying manifests in $MANIFEST_DIR"
+            kubectl apply -f "$MANIFEST_DIR"
+            kubectl rollout status deployment/backend -n $ENV || true
+            kubectl rollout status deployment/frontend -n $ENV || true
+          else
+            echo "No manifests found for $ENV, skipping deployment."
+          fi
+          
+  
