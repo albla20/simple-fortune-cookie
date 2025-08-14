@@ -9,4 +9,4 @@ RUN go build -o frontend .
 FROM alpine:3.19
 COPY --from=builder /app/frontend /frontend
 EXPOSE 8080
-CMD ["/frontend"]
+CMD ["/frontend", "run", "go"]

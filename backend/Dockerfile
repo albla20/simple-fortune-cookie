@@ -6,7 +6,7 @@ COPY . .
 RUN go mod download
 RUN go build -o backend .
 EXPOSE 9000
-CMD ["./backend"]
+CMD ["./backend", "run", "go"]
 
 # Run stage
 #FROM alpine:3.19
