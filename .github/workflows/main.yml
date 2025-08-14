@@ -12,4 +12,4 @@ jobs:
       container: gradle:6-jdk11
       steps:
         - name: test
-          run: frontend/main_test.go
+          run: frontend/main.go
