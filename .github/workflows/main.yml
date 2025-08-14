@@ -1,0 +1,17 @@
+name: main workflow
+on: 
+  push:
+    branches:
+    - main
+  pull_request:
+    branches: 
+    - main
+jobs:
+    Build: 
+      runs-on: ubuntu-latest
+      container: gradle:6-jdk11
+      steps:
+        - name: build application
+          run: go build
+        - name: test
+          run: frontend/main_test.go
