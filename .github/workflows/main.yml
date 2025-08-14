@@ -40,9 +40,9 @@ jobs:
           password: ${{ env.docker_password}}
       - name: Build and push Docker images
         run: |
-          docker build -t albla20/backend:latest ./backend
+          docker build -t albla20/backend:latest
           docker push albla20/backend:latest
-          docker build -t albla20/frontend:latest ./frontend
+          docker build -t albla20/frontend:latest
           docker push albla20/frontend:latest
       - name: pull docker images
         run: |
