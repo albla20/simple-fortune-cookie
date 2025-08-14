@@ -37,8 +37,8 @@ jobs:
 
       - name: Build and push
         run: |
-          IMAGE=mathiasoverby/backend:latest
-          IMAGE=mathiasoverby/frontend:latest
+          IMAGE=backend/Dockerfile
+          IMAGE=frontend/Dockerfile
           docker build -t mathiasoverby/frontend:latest .
           docker build -t mathiasoverby/backend:latest .
 
