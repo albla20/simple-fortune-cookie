@@ -9,7 +9,9 @@ on:
 jobs:
     Build: 
       runs-on: ubuntu-latest
-      container: gradle:6-jdk11
+      
       steps:
-        - name: test
-          run: frontend/main.go
+        - name: Build
+          run: go build
+        - name: test frontend
+          run: go test
