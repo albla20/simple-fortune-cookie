@@ -84,14 +84,22 @@ jobs:
     needs: Build
     steps:
       - uses: actions/checkout@v4
+
       - name: Start stack
         run: docker compose up -d --build
+
       - name: Wait for services
-        run: sleep 30
+        run: |
+          echo "Waiting for frontend to be healthy..."
+          until docker compose ps frontend | grep "Up"; do sleep 2; done
+          echo "Waiting for backend to be healthy..."
+          until docker compose ps backend | grep "Up"; do sleep 2; done
+
       - name: Run tests
         run: |
           docker compose exec -T frontend bash -c "bash /test_app.sh http://backend:9000"
           docker compose exec -T backend bash -c "bash /test_app.sh http://frontend:8080"
+
       - name: Tear down
         if: always()
         run: docker compose down
