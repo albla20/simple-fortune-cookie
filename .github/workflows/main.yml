@@ -63,7 +63,7 @@ jobs:
       - name: kubeconfig
         run: |
           echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
-          cat kubeconfig
-          kubectl --kubeconfig kubeconfig get deployments
+          export KUBECONFIG=$PWD/kubeconfig
+          kubectl get nodes
           
   
