@@ -40,11 +40,11 @@ jobs:
           password: ${{ env.DOCKER_PASSWORD }}
       - name: Build and push Docker images
         run: |
-          docker build -t mathiasoverby/backend:latest ./backend
-          docker push mathiasoverby/backend:latest
-          docker build -t mathiasoverby/frontend:latest ./frontend
-          docker push mathiasoverby/frontend:latest
+          docker build -t albla20/backend:latest ./backend
+          docker push albla20/backend:latest
+          docker build -t albla20/frontend:latest ./frontend
+          docker push albla20/frontend:latest
       - name: pull docker images
         run: |
-          docker pull mathiasoverby/backend:latest
-          docker pull mathiasoverby/frontend:latest
+          docker pull albla20/backend:latest
+          docker pull albla20/frontend:latest
