@@ -1,18 +1,34 @@
 version: "3.9"
+
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    volumes:
+      - redis_data:/data
+
   backend: 
     build:
       context: ./backend
       dockerfile: Dockerfile
     image: albla20/backend:latest
+    environment:
+      - REDIS_DNS=redis  
+    depends_on:
+      - redis
     ports: 
-    - 9000
+      - "9000:9000"
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     image: albla20/frontend:latest
     ports:
-    - 8080
+      - "8080:8080"
     depends_on:
-    - backend
+      - backend
+
+volumes:
+  redis_data:
