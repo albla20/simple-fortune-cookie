@@ -62,6 +62,7 @@ jobs:
 
       - name: kubeconfig
         run: |
-          echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
           kubectl --kubeconfig kubeconfig get deployments 
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+           
   
