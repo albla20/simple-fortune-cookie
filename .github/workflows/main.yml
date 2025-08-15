@@ -100,9 +100,8 @@ jobs:
       
       - name: Testing
         run: | 
-         docker compose up
+         docker compose up -d
          bash test_app.sh
-
 
 
           
