@@ -6,7 +6,7 @@ services:
       - redis_data:/data
 
   backend:
-    image: albla20/backend:100
+    image: albla20/backend:latest
     environment:
       - REDIS_DNS=redis
     ports:
@@ -14,7 +14,7 @@ services:
     # IMPORTANT: backend must listen on 0.0.0.0:9000 inside the container
 
   frontend:
-    image: albla20/frontend:100
+    image: albla20/frontend:latest
     environment:
       - BACKEND_DNS=backend
       - BACKEND_PORT=9000  
