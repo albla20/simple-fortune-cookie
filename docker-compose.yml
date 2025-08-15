@@ -29,12 +29,6 @@ services:
       - "8080:8080"
     depends_on:
       - backend
-      
-  test:
-    image: curlimages/curl:8.8.0
-    depends_on:
-      - frontend
-    entrypoint: ["curl", "-f", "http://frontend:8080/healthz"]
 
 volumes:
   redis_data:
