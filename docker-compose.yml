@@ -29,6 +29,18 @@ services:
       - "8080:8080"
     depends_on:
       - backend
+      
+  test:
+    image: curlimages/curl:8.8.0
+    depends_on:
+      - backend
+    entrypoint: >
+      sh -c "
+      echo 'Waiting for backend...';
+      sleep 5;
+      curl -f http://backend:9000/health || exit 1
+      "
+
 
 volumes:
   redis_data:
