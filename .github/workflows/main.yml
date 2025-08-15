@@ -95,8 +95,13 @@ jobs:
             echo "No manifests found for $ENV, skipping deployment."
           fi
 
+
+
+      
       - name: Testing
-        run: bash test_app.sh
+        run: | 
+         docker compose up
+         bash test_app.sh
 
 
 
