@@ -13,7 +13,6 @@ on:
       - development
 
 env:
-  COMPOSE_FILE: /docker-compose.yml
   GIT_COMMIT: ${{ github.sha }}
   KUBECONFIG: ${{ github.workspace }}/kubeconfig
 
@@ -98,11 +97,11 @@ jobs:
 
 
 
-
-      - name: Build docker image
-        run: docker-compose build
+      - name: Build docker images
+        run: docker compose -f docker-compose.yml build
 
       - name: Run tests
-        run: docker-compose run test
+        run: docker compose -f docker-compose.yml run --rm test
+
           
   
