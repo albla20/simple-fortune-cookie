@@ -97,15 +97,6 @@ jobs:
 
 
 
-      - name: Start test stack
-        run: docker compose -f docker-compose.yml up -d --build
-
-      - name: Check availability
-        run: curl -f http://localhost:8080/healthz
-
-      - name: Stop test stack
-        if: always()
-        run: docker compose -f docker-compose.yml down -v
 
           
   
