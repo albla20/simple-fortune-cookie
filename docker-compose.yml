@@ -30,17 +30,11 @@ services:
     depends_on:
       - backend
       
-  test:
+ test:
     image: curlimages/curl:8.8.0
     depends_on:
-      - backend
-    entrypoint: >
-      sh -c "
-      echo 'Waiting for backend...';
-      sleep 5;
-      curl -f http://backend:9000/health || exit 1
-      "
-
+      - frontend
+    entrypoint: ["curl", "-f", "http://frontend:8080/healthz"]
 
 volumes:
   redis_data:
