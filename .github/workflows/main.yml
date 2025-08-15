@@ -97,6 +97,13 @@ jobs:
 
 
 
+      
+      - name: Testing
+        run: | 
+         docker compose up -d
+         bash test_app.sh
+         docker compose down
+
 
           
   
