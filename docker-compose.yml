@@ -1,30 +1,23 @@
-version: "3.9"
-
 services:
   redis:
     image: redis:7-alpine
-    container_name: redis
     restart: always
     volumes:
       - redis_data:/data
 
-  backend: 
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    image: albla20/backend:latest
+  backend:
+    image: albla20/backend:100
     environment:
-      - REDIS_DNS=redis  
-    depends_on:
-      - redis
-    ports: 
-      - "9000:9000"
+      - REDIS_DNS=redis
+    ports:
+      - "9000:9000"          # for host access (not needed for containers to talk)
+    # IMPORTANT: backend must listen on 0.0.0.0:9000 inside the container
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    image: albla20/frontend:latest
+    image: albla20/frontend:100
+    environment:
+      - BACKEND_DNS=backend
+      - BACKEND_PORT=9000  
     ports:
       - "8080:8080"
     depends_on:
