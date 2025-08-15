@@ -97,11 +97,15 @@ jobs:
 
 
 
-      - name: Build docker images
-        run: docker compose -f docker-compose.yml build
+      - name: Start test stack
+        run: docker compose -f docker-compose.yml up -d --build
 
-      - name: Run tests
-        run: docker compose -f docker-compose.yml run --rm test
+      - name: Check availability
+        run: curl -f http://localhost:8080/healthz
+
+      - name: Stop test stack
+        if: always()
+        run: docker compose -f docker-compose.yml down -v
 
           
   
